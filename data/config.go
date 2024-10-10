@@ -1,12 +1,25 @@
 package data
 
-const BackupDir = "D:/TESTDIR/backup/"
-const RestoreDir = "D:/TESTDIR/restore/"
+type ConfigStruct struct {
+	BackupDir         string
+	RestoreDir        string
+	Key               string
+	RestoreToOriginal bool
+	Cloud             string
+	Port              string
+}
 
-const defaultKey = "Man Always Remember Love Because Of Romance Only"
+var Config = ConfigStruct{}
 
-var Key = []byte(defaultKey)
-var RestoreToOriginal = false
+func (c *ConfigStruct) Init() {
+	c.BackupDir = "D:/TESTDIR/backup/"
+	c.RestoreDir = "D:/TESTDIR/restore/"
+	c.Key = "Man Always Remember Love Because Of Romance Only"
+	c.RestoreToOriginal = false
+	c.Cloud = "127.0.0.1"
+	c.Port = "8080"
+}
 
-var Cloud = "127.0.0.1"
-var Port = "8080"
+func init() {
+	Config.Init()
+}

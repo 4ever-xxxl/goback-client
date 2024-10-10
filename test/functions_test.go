@@ -116,11 +116,11 @@ func TestCompress(t *testing.T) {
 func TestEncryptDecrypt(t *testing.T) {
 	var originBuf, encryptedBuf, decryptedBuf bytes.Buffer
 	originBuf.WriteString("hello world")
-	err := functions.Encrypt(&originBuf, &encryptedBuf, data.Key)
+	err := functions.Encrypt(&originBuf, &encryptedBuf, []byte(data.Config.Key))
 	if err != nil {
 		t.Error(err)
 	}
-	err = functions.Decrypt(&encryptedBuf, &decryptedBuf, data.Key)
+	err = functions.Decrypt(&encryptedBuf, &decryptedBuf, []byte(data.Config.Key))
 	if err != nil {
 		t.Error(err)
 	}
@@ -133,10 +133,10 @@ func TestBackupRestore(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if err := functions.Backup(originDir, data.Key); err != nil {
+	if err := functions.Backup(originDir, []byte(data.Config.Key)); err != nil {
 		t.Error(err)
 	}
-	if err := functions.Restore(&fileInfo, data.Key); err != nil {
+	if err := functions.Restore(&fileInfo, []byte(data.Config.Key)); err != nil {
 		t.Error(err)
 	}
 	if err = compareDirs(originDir, "D:/TESTDIR/restore/dir4Test"); err != nil {

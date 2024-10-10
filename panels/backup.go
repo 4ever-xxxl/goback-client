@@ -50,7 +50,9 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 				if !b {
 					return
 				}
-				log.Println("Password: ", passwordEntry.Text)
+				if passwordEntry.Text == "" {
+					passwordEntry.Text = data.Config.Key
+				}
 				if err = functions.Backup(listURI.Path(), []byte(passwordEntry.Text)); err != nil {
 					dialog.ShowError(err, win)
 					return
@@ -69,11 +71,25 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 				log.Println("Cancelled")
 				return
 			}
-			if err = functions.Backup(reader.URI().Path(), data.Key); err != nil {
-				dialog.ShowError(err, win)
-				return
+			passwordEntry := widget.NewPasswordEntry()
+			form := &widget.Form{
+				Items: []*widget.FormItem{
+					widget.NewFormItem("密钥", passwordEntry),
+				},
 			}
-			list.Refresh()
+			dialog.ShowForm("加密密钥", "确认", "取消", form.Items, func(b bool) {
+				if !b {
+					return
+				}
+				if passwordEntry.Text == "" {
+					passwordEntry.Text = data.Config.Key
+				}
+				if err = functions.Backup(reader.URI().Path(), []byte(passwordEntry.Text)); err != nil {
+					dialog.ShowError(err, win)
+					return
+				}
+				list.Refresh()
+			}, win)
 		}, win)
 		fd.Show()
 	})
@@ -82,17 +98,33 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 			dialog.ShowInformation("No File Selected", "Please select a file to restore", win)
 			return
 		}
-		if err := functions.Restore(&data.LocalFileList[selectedID], data.Key); err != nil {
-			dialog.ShowError(err, win)
-			return
+		passwordEntry := widget.NewPasswordEntry()
+		form := &widget.Form{
+			Items: []*widget.FormItem{
+				widget.NewFormItem("密钥", passwordEntry),
+			},
 		}
-		dialog.ShowInformation("Restore", "Restore completed", win)
+		dialog.ShowForm("加密密钥", "确认", "取消", form.Items, func(b bool) {
+			if !b {
+				return
+			}
+			if passwordEntry.Text == "" {
+				passwordEntry.Text = data.Config.Key
+			}
+			if err := functions.Restore(&data.LocalFileList[selectedID], []byte(passwordEntry.Text)); err != nil {
+				dialog.ShowError(err, win)
+				return
+			}
+			dialog.ShowInformation("Restore", "Restore completed", win)
+		}, win)
 	})
 	deleteButton := widget.NewButton("Delete", func() {
 		dialog.ShowConfirm("Delete", "Are you sure you want to delete the selected files?", func(b bool) {
 			if b {
-				// TODO: 删除按钮的点击事件处理
-				log.Println("Delete confirmed")
+				if err := functions.Delete(data.LocalFileList[selectedID]); err != nil {
+					dialog.ShowError(err, win)
+					return
+				}
 				data.LocalFileList = append(data.LocalFileList[:selectedID], data.LocalFileList[selectedID+1:]...)
 				selectedID = -1
 				fileDetaileRefresh(fdbox, nil)

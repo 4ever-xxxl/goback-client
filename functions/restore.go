@@ -8,7 +8,7 @@ import (
 )
 
 func Restore(f *data.File, key []byte) error {
-	backupPath := data.BackupDir + f.Name + ".backup"
+	backupPath := data.Config.BackupDir + f.Name + ".backup"
 
 	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
 		return err
@@ -34,10 +34,10 @@ func Restore(f *data.File, key []byte) error {
 	}
 
 	var restoreDir string
-	if data.RestoreToOriginal {
+	if data.Config.RestoreToOriginal {
 		restoreDir = f.Path[:len(f.Path)-len(f.Name)]
 	} else {
-		restoreDir = data.RestoreDir
+		restoreDir = data.Config.RestoreDir
 	}
 	if err = UnTar(&tarredBuf, restoreDir); err != nil {
 		return err

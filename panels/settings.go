@@ -1,14 +1,64 @@
 package panels
 
 import (
-	"log"
+	"goback-client/data"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
 )
 
-func settingsScreen(_ fyne.Window) fyne.CanvasObject {
-	log.Println("TODO: settingsScreen")
-	return container.NewCenter(widget.NewLabel("Settings"))
+var config = data.Config
+
+func settingsScreen(win fyne.Window) fyne.CanvasObject {
+	backupDirBinding := binding.BindString(&config.BackupDir)
+	backupDirEntry := widget.NewEntryWithData(backupDirBinding)
+	backupDirFormItem := widget.NewFormItem("备份目录", backupDirEntry)
+
+	restoreDirBinding := binding.BindString(&config.RestoreDir)
+	restoreDirEntry := widget.NewEntryWithData(restoreDirBinding)
+	restoreDirFormItem := widget.NewFormItem("恢复目录", restoreDirEntry)
+
+	keyBinding := binding.BindString(&config.Key)
+	keyEntry := widget.NewEntryWithData(keyBinding)
+	keyEntry.Password = true
+	keyFormItem := widget.NewFormItem("加密密钥", keyEntry)
+
+	cloudBinding := binding.BindString(&config.Cloud)
+	cloudEntry := widget.NewEntryWithData(cloudBinding)
+	cloudFormItem := widget.NewFormItem("云端地址", cloudEntry)
+
+	portBinding := binding.BindString(&config.Port)
+	portEntry := widget.NewEntryWithData(portBinding)
+	portFormItem := widget.NewFormItem("端口", portEntry)
+
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			backupDirFormItem,
+			restoreDirFormItem,
+			keyFormItem,
+			cloudFormItem,
+			portFormItem,
+		},
+	}
+
+	restoreToOriginalBinding := binding.BindBool(&config.RestoreToOriginal)
+	restoreToOriginalCheckbox := widget.NewCheckWithData("恢复到原始目录", restoreToOriginalBinding)
+
+	saveButton := widget.NewButton("保存设置", func() {
+		data.Config = config
+	})
+
+	resetButton := widget.NewButton("重置设置", func() {
+		config.Init()
+		data.Config.Init()
+	})
+
+	return container.NewVBox(
+		form,
+		restoreToOriginalCheckbox,
+		saveButton,
+		resetButton,
+	)
 }

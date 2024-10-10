@@ -37,7 +37,7 @@ func Backup(ffilepath string, key []byte) error {
 		return err
 	}
 
-	backupPath := data.BackupDir + newFileInfo.Name + ".backup"
+	backupPath := data.Config.BackupDir + newFileInfo.Name + ".backup"
 	file, err := os.Create(backupPath)
 	if err != nil {
 		return err

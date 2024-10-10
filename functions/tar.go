@@ -10,20 +10,6 @@ import (
 	"path/filepath"
 )
 
-// func writeLength(val int, buf *bytes.Buffer) error {
-// 	buf.WriteByte(byte(val & 0xff))
-// 	buf.WriteByte(byte((val >> 8) & 0xff))
-// 	buf.WriteByte(byte((val >> 16) & 0xff))
-// 	buf.WriteByte(byte((val >> 24) & 0xff))
-// 	return nil
-// }
-
-// func tarStream(s string, buf *bytes.Buffer) error {
-// 	writeLength(len(s), buf)
-// 	buf.WriteString(s)
-// 	return nil
-// }
-
 func Tar(f *data.File, buf *bytes.Buffer) error {
 	tw := tar.NewWriter(buf)
 	defer tw.Close()
