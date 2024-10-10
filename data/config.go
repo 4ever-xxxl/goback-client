@@ -5,6 +5,8 @@ type ConfigStruct struct {
 	RestoreDir        string
 	Key               string
 	RestoreToOriginal bool
+	TimedBackup       bool
+	FsNotify          bool
 	Cloud             string
 	Port              string
 }
@@ -16,6 +18,8 @@ func (c *ConfigStruct) Init() {
 	c.RestoreDir = "D:/TESTDIR/restore/"
 	c.Key = "Man Always Remember Love Because Of Romance Only"
 	c.RestoreToOriginal = false
+	c.TimedBackup = false
+	c.FsNotify = false
 	c.Cloud = "127.0.0.1"
 	c.Port = "8080"
 }

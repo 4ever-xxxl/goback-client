@@ -1,6 +1,7 @@
 package panels
 
 import (
+	"fmt"
 	"goback-client/data"
 	"goback-client/functions"
 	"log"
@@ -121,6 +122,10 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 	deleteButton := widget.NewButton("Delete", func() {
 		dialog.ShowConfirm("Delete", "Are you sure you want to delete the selected files?", func(b bool) {
 			if b {
+				if selectedID < 0 || selectedID >= len(data.LocalFileList) {
+					dialog.ShowError(fmt.Errorf("invalid selection"), win)
+					return
+				}
 				if err := functions.Delete(data.LocalFileList[selectedID]); err != nil {
 					dialog.ShowError(err, win)
 					return

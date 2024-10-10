@@ -46,6 +46,12 @@ func settingsScreen(win fyne.Window) fyne.CanvasObject {
 	restoreToOriginalBinding := binding.BindBool(&config.RestoreToOriginal)
 	restoreToOriginalCheckbox := widget.NewCheckWithData("恢复到原始目录", restoreToOriginalBinding)
 
+	timeBackupBinding := binding.BindBool(&config.TimedBackup)
+	timeBackupCheckbox := widget.NewCheckWithData("定时备份", timeBackupBinding)
+
+	fsNotifyBinding := binding.BindBool(&config.FsNotify)
+	fsNotifyCheckbox := widget.NewCheckWithData("文件系统感知", fsNotifyBinding)
+
 	saveButton := widget.NewButton("保存设置", func() {
 		data.Config = config
 	})
@@ -58,6 +64,8 @@ func settingsScreen(win fyne.Window) fyne.CanvasObject {
 	return container.NewVBox(
 		form,
 		restoreToOriginalCheckbox,
+		timeBackupCheckbox,
+		fsNotifyCheckbox,
 		saveButton,
 		resetButton,
 	)

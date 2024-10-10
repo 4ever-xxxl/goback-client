@@ -9,7 +9,7 @@ import (
 func Delete(f data.File) error {
 	backupFilePath := filepath.Join(data.Config.BackupDir, f.Name)
 	if _, err := os.Stat(backupFilePath); os.IsNotExist(err) {
-		return err
+		return nil
 	}
 	err := os.Remove(backupFilePath)
 	if err != nil {
