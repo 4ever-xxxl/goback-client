@@ -6,6 +6,7 @@ import (
 	"goback-client/functions"
 	"log"
 	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -40,11 +41,52 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 			if listURI == nil {
 				return
 			}
-			// 请输入加密密钥
+
+			// 密码输入框
 			passwordEntry := widget.NewPasswordEntry()
+			// 自定义备份
+			var selectedChoice data.SelectChoice
+			fileTypeSelect := widget.NewSelect([]string{"", "文件", "文件夹", "管道", "硬链接", "软链接"}, func(s string) {
+				selectedChoice.FileType = data.GetFileType(s)
+			})
+			fileSuffixNameSelect := widget.NewSelect([]string{"", ".png", ".tar", ".tar.gz", ".tar.gz.enc"}, func(s string) {
+				selectedChoice.SuffixName = s
+			})
+			fileModifiedAtSelect := widget.NewSelect([]string{"", "1小时前", "1天前", "1周前", "1月前", "1年前"}, func(s string) {
+				switch s {
+				case "1小时前":
+					selectedChoice.ModifiedAt = selectedChoice.ModifiedAt.Add(-1 * time.Hour)
+				case "1天前":
+					selectedChoice.ModifiedAt = selectedChoice.ModifiedAt.Add(-24 * time.Hour)
+				case "1周前":
+					selectedChoice.ModifiedAt = selectedChoice.ModifiedAt.Add(-7 * 24 * time.Hour)
+				case "1月前":
+					selectedChoice.ModifiedAt = selectedChoice.ModifiedAt.Add(-30 * 24 * time.Hour)
+				case "1年前":
+					selectedChoice.ModifiedAt = selectedChoice.ModifiedAt.Add(-365 * 24 * time.Hour)
+				}
+			})
+			fileSizeSelect := widget.NewSelect([]string{"", "1KB", "1MB", "1GB", "1TB"}, func(s string) {
+				switch s {
+				case "":
+					selectedChoice.Size = 0
+				case "1KB":
+					selectedChoice.Size = 1024
+				case "1MB":
+					selectedChoice.Size = 1024 * 1024
+				case "1GB":
+					selectedChoice.Size = 1024 * 1024 * 1024
+				case "1TB":
+					selectedChoice.Size = 1024 * 1024 * 1024 * 1024
+				}
+			})
 			form := &widget.Form{
 				Items: []*widget.FormItem{
 					widget.NewFormItem("密钥", passwordEntry),
+					widget.NewFormItem("类型", fileTypeSelect),
+					widget.NewFormItem("后缀名", fileSuffixNameSelect),
+					widget.NewFormItem("修改时间", fileModifiedAtSelect),
+					widget.NewFormItem("大小", fileSizeSelect),
 				},
 			}
 			dialog.ShowForm("加密密钥", "确认", "取消", form.Items, func(b bool) {
@@ -54,7 +96,7 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 				if passwordEntry.Text == "" {
 					passwordEntry.Text = data.Config.Key
 				}
-				if err = functions.Backup(listURI.Path(), []byte(passwordEntry.Text)); err != nil {
+				if err = functions.Backup(listURI.Path(), []byte(passwordEntry.Text), selectedChoice); err != nil {
 					dialog.ShowError(err, win)
 					return
 				}

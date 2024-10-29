@@ -19,12 +19,15 @@ func Tar(f *data.File, buf *bytes.Buffer) error {
 			return err
 		}
 
+		if !data.CheckSelectChoice(info, f.SelectChoice) {
+			return nil
+		}
+		log.Println(info.Name())
+
 		header, err := tar.FileInfoHeader(info, info.Name())
 		if err != nil {
 			return err
 		}
-
-		log.Println(header)
 
 		header.Name, err = filepath.Rel(filepath.Dir(f.Path), path)
 		if err != nil {

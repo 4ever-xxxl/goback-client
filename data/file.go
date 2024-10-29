@@ -26,8 +26,12 @@ type File struct {
 	Permissions string
 	ModifiedAt  time.Time
 	MD5         string
-	InCloud     bool
 	Remark      string
+	//  DIY Backup
+	SelectChoice SelectChoice
+	// For Cloud
+	InCloud bool
+	SHA256  string
 } // 保存了文件的基本元数据
 
 var LocalFileList = []File{} // 保存了本地文件列表
@@ -48,6 +52,25 @@ func (f FileType) String() string {
 		return "软链接"
 	default:
 		return "未知类型"
+	}
+}
+
+func GetFileType(name string) FileType {
+	switch name {
+	case "":
+		return -1
+	case "文件":
+		return FILE
+	case "文件夹":
+		return FOLDER
+	case "管道":
+		return PIPE
+	case "硬链接":
+		return HARDLINK
+	case "软链接":
+		return SOFTLINK
+	default:
+		return -1
 	}
 }
 

@@ -2,6 +2,9 @@ package panels
 
 import (
 	"goback-client/data"
+	"goback-client/functions"
+	"log"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -12,6 +15,7 @@ import (
 var config = data.Config
 
 func settingsScreen(win fyne.Window) fyne.CanvasObject {
+	log.Println(config)
 	backupDirBinding := binding.BindString(&config.BackupDir)
 	backupDirEntry := widget.NewEntryWithData(backupDirBinding)
 	backupDirFormItem := widget.NewFormItem("备份目录", backupDirEntry)
@@ -48,12 +52,24 @@ func settingsScreen(win fyne.Window) fyne.CanvasObject {
 
 	timeBackupBinding := binding.BindBool(&config.TimedBackup)
 	timeBackupCheckbox := widget.NewCheckWithData("定时备份", timeBackupBinding)
+	timeBackupCheckbox.OnChanged = func(value bool) {
+		config.TimedBackup = value
+		if value {
+			functions.TimedBackup(1 * time.Hour) // 定时备份间隔为 1 小时
+		} else {
+			if functions.StopTimedBackup != nil {
+				close(functions.StopTimedBackup)
+				functions.StopTimedBackup = nil
+			}
+		}
+	}
 
 	fsNotifyBinding := binding.BindBool(&config.FsNotify)
 	fsNotifyCheckbox := widget.NewCheckWithData("文件系统感知", fsNotifyBinding)
 
 	saveButton := widget.NewButton("保存设置", func() {
 		data.Config = config
+		log.Println(data.Config)
 	})
 
 	resetButton := widget.NewButton("重置设置", func() {
