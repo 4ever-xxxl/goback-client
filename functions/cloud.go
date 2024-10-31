@@ -31,7 +31,6 @@ func GetRootDir() {
 	}
 
 	if rootDirResp.Status == 200 {
-		log.Println("[Cloud] Root dir:", rootDirResp.Data)
 		data.Config.RootDir = rootDirResp.Data
 	}
 }
@@ -55,7 +54,6 @@ func GetFileList(s string) {
 	}
 
 	if fileListResp.Status == 200 {
-		log.Println("[Cloud] File list:", fileListResp.Data)
 		var cloudFiles []data.CloudFile
 		for _, item := range fileListResp.Data.Items {
 			cloudFiles = append(cloudFiles, data.CloudFile{
@@ -149,7 +147,7 @@ func UploadFiles(files []string, parentDir string) error {
 	}
 
 	if uploadResp.Status == 200 {
-		log.Println("[Cloud] Upload success:", uploadResp.Data)
+		log.Println("[Cloud] Upload success")
 	} else {
 		log.Println("[Cloud] Upload failed:", uploadResp.Err)
 	}
@@ -194,7 +192,7 @@ func DeleteFile(filename, parentID string) error {
 	}
 
 	if deleteResp.Status == 200 {
-		log.Println("[Cloud] Delete success:", deleteResp.Msg)
+		log.Println("[Cloud] Delete success")
 	} else {
 		log.Println("[Cloud] Delete failed:", deleteResp.Err)
 	}

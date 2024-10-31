@@ -36,4 +36,8 @@ deps:
 build-linux: 
 	GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
 
-.PHONY: all build clean run test deps build-linux
+# Package the Fyne application
+package:
+	fyne package -os windows
+
+.PHONY: all build clean run test deps build-linux package
