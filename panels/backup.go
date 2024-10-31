@@ -175,6 +175,7 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 				data.LocalFileList = append(data.LocalFileList[:selectedID], data.LocalFileList[selectedID+1:]...)
 				selectedID = -1
 				fileDetaileRefresh(fdbox, nil)
+				list.Refresh()
 			}
 		}, win)
 	})

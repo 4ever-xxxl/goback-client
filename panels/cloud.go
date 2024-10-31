@@ -59,6 +59,7 @@ func cloudFileList(w fyne.Window, contentContainer *fyne.Container) {
 				functions.DeleteFile(data.CloudFileList[selectedCloudID].Filename, data.Config.RootDir)
 				functions.GetFileList(data.Config.RootDir)
 				list.Refresh()
+				cloudFileDetaileRefresh(fdbox, nil)
 			}
 		}, w)
 	})
