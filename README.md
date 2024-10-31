@@ -26,7 +26,12 @@
 
 ## Usage
 
-准备好 [GO](https://go.dev/) 环境，
+准备好 [GO](https://go.dev/) 环境，若要使用云盘，需要先在根目录下创建 `.env` 文件，内容如下：
+
+```text
+CLOUD = your_cloud_name
+PORT = your_port
+```
 
 然后执行以下命令运行：
 ```shell
