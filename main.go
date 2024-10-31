@@ -73,6 +73,7 @@ func main() {
 	w.ShowAndRun()
 	defer func() {
 		data.SaveLocalFileList(data.LocalFileListPath)
+		data.Config.Save()
 	}()
 }
 

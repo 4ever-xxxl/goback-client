@@ -4,6 +4,8 @@ go 1.23.1
 
 require fyne.io/fyne/v2 v2.5.1
 
+require github.com/joho/godotenv v1.5.1 // indirect
+
 require (
 	fyne.io/systray v1.11.0 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect

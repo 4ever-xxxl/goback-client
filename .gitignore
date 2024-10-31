@@ -54,3 +54,4 @@ dist/
 # Local environment variables
 .env
 static/local_file_list.json
+static/config.json
