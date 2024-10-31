@@ -34,8 +34,17 @@ type File struct {
 	SHA256  string
 } // 保存了文件的基本元数据
 
-var LocalFileList = []File{} // 保存了本地文件列表
-var CloudFileList = []File{} // 保存了云端文件列表
+type CloudFile struct {
+	UUID      string
+	Filename  string
+	Filesize  int
+	Ext       string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+var LocalFileList = []File{}      // 保存了本地文件列表
+var CloudFileList = []CloudFile{} // 保存了云端文件列表
 const LocalFileListPath = "static/local_file_list.json"
 
 func (f FileType) String() string {

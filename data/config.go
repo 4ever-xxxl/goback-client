@@ -9,6 +9,10 @@ type ConfigStruct struct {
 	FsNotify          bool
 	Cloud             string
 	Port              string
+	Username          string
+	Password          string
+	JWTTOKEN          string
+	RootDir           string
 }
 
 var Config = ConfigStruct{}
@@ -20,8 +24,10 @@ func (c *ConfigStruct) Init() {
 	c.RestoreToOriginal = false
 	c.TimedBackup = false
 	c.FsNotify = false
-	c.Cloud = "127.0.0.1"
-	c.Port = "8080"
+	c.Cloud = "124.222.42.111"
+	c.Port = "8000"
+	c.Username = "Red"
+	c.Password = "123456"
 }
 
 func init() {

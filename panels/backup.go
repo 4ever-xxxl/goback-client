@@ -18,7 +18,7 @@ import (
 var selectedID int = -1
 
 func backupScreen(win fyne.Window) fyne.CanvasObject {
-	fdbox := fileDetaileHbox()
+	fdbox := fileDetaileHbox(11)
 	list := widget.NewList(
 		func() int {
 			return len(data.LocalFileList)
@@ -178,6 +178,19 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 			}
 		}, win)
 	})
+	uploadButton := widget.NewButton("Upload", func() {
+		if selectedID == -1 {
+			dialog.ShowInformation("No File Selected", "Please select a file to upload", win)
+			return
+		}
+		var files []string
+		files = append(files, data.Config.BackupDir+data.LocalFileList[selectedID].Name+".backup")
+		if err := functions.UploadFiles(files, data.Config.RootDir); err != nil {
+			dialog.ShowError(err, win)
+			return
+		}
+		dialog.ShowInformation("Upload", "Upload completed", win)
+	})
 	unselectButton := widget.NewButton("Unselect", func() {
 		list.UnselectAll()
 	})
@@ -192,6 +205,7 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 		fileDetaileRefresh(fdbox, &data.LocalFileList[id])
 		restoreButton.Enable()
 		deleteButton.Enable()
+		uploadButton.Enable()
 		unselectButton.Enable()
 	}
 	list.OnUnselected = func(id widget.ListItemID) {
@@ -199,10 +213,11 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 		fileDetaileRefresh(fdbox, nil)
 		restoreButton.Disable()
 		deleteButton.Disable()
+		uploadButton.Disable()
 		unselectButton.Disable()
 	}
 
-	buttons := container.NewHBox(addFolderButton, addFileButton, restoreButton, deleteButton, unselectButton)
+	buttons := container.NewHBox(addFolderButton, addFileButton, restoreButton, deleteButton, uploadButton, unselectButton)
 	leftPanel := container.NewVSplit(buttons, list)
 	leftPanel.Offset = 0.1
 	content := container.NewHSplit(leftPanel, container.NewCenter(fdbox))
@@ -210,10 +225,10 @@ func backupScreen(win fyne.Window) fyne.CanvasObject {
 	return content
 }
 
-func fileDetaileHbox() fyne.CanvasObject {
-	widgets := make([]fyne.CanvasObject, 11)
+func fileDetaileHbox(n int) fyne.CanvasObject {
+	widgets := make([]fyne.CanvasObject, n)
 	widgets[0] = widget.NewIcon(theme.DocumentIcon())
-	for i := 1; i < 11; i++ {
+	for i := 1; i < n; i++ {
 		widgets[i] = widget.NewLabel("")
 		widgets[i].(*widget.Label).Alignment = fyne.TextAlignLeading
 	}
